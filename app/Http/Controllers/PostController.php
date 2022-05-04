@@ -34,10 +34,12 @@ class PostController extends Controller
             array_push($follow, $followings[$i]['following_id']);
         }
 
+        $posts = Post::where('user_id', '=', $id)->where('range', '=', 'public')->get();
 
         if ($user) {
             if (in_array($user->id, $follow)) {
-                $profile = User::with(['posts'])->where('id', '=', $id)->first();
+                $profile = User::where('id', '=', $id)->first();
+                $profile['posts'] = $posts;
                 return response($profile, 200);
             } else if ($user->id == $me->id) {
                 $profile = User::with(['posts'])->where('id', '=', $id)->first();
