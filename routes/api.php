@@ -45,7 +45,8 @@ Route::get('/auth/login/google/callback', [GoogleAuthController::class, 'callbac
 Route::get('/gpsData', [GpsDataController::class, 'gpsData']);
 Route::get('/gpsData/check', [GpsDataController::class, 'gpsDataCheck']);
 
-
+//모든유저검색
+Route::get('/allUser', [AuthController::class, 'allUser']);
 
 
 //현재로그인 확인
@@ -56,7 +57,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('userSearch', [AuthController::class, 'userSearch']);
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::patch('/fcmToken', [AuthController::class, 'fcmToken']);
-    Route::get('/allUser', [AuthController::class, 'allUser']);
 
     // 운동sns
     Route::prefix('post')->group(function () {
@@ -72,8 +72,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile/{id}', [PostController::class, "profile"]);
     });
 
-    // 팔로우
+    // 팔로우요청
     Route::post('/followRequest/{user}', [FollowsController::class, 'request']);
+    // 팔로우수락
     Route::post('/follow/{user}', [FollowsController::class, 'store']);
 
 
