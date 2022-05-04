@@ -18,9 +18,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
-    public function test()
+    public function allUser()
     {
-        return "test";
+        return User::all('id');
     }
 
     public function register(Request $request)

@@ -56,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('userSearch', [AuthController::class, 'userSearch']);
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::patch('/fcmToken', [AuthController::class, 'fcmToken']);
-
+    Route::get('/allUser', [AuthController::class, 'allUser']);
 
     // 운동sns
     Route::prefix('post')->group(function () {
@@ -73,7 +73,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // 팔로우
+    Route::post('/followRequest/{user}', [FollowsController::class, 'request']);
     Route::post('/follow/{user}', [FollowsController::class, 'store']);
+
 
     //게시글 좋아요
     Route::post('/like/{post}', [LikeController::class, 'store']);

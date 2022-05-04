@@ -12,6 +12,33 @@ use Illuminate\Support\Facades\Auth;
 
 class FollowsController extends Controller
 {
+    public function request(User $user)
+    {
+        $me = Auth::user();
+
+        Notification::create(
+            [
+                'mem_id' => $user->id,
+                'target_mem_id' => $me->id,
+                'not_type' => 'followRequest',
+                'not_message' => $me->name . '님이' . ' ' . '팔로우를 요청했습니다.',
+                'not_url' => '',
+                'read' => false
+            ]
+        );
+        FCMService::send(
+            $user->fcm_token,
+            [
+                'title' => '알림',
+                'body' => $me->name . '님이' . ' ' . '팔로우를 요청했습니다.'
+            ],
+            [
+                'id' => $user->id,
+                'type' => 'followRequest'
+            ],
+        );
+    }
+
     public function store(User $user)
     {
         //현재 로그인한 유저의 id
