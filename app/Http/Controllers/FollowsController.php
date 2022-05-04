@@ -33,7 +33,7 @@ class FollowsController extends Controller
                 'body' => $me->name . '님이' . ' ' . '팔로우를 요청했습니다.'
             ],
             [
-                'id' => $user->id,
+                'id' => $user,
                 'type' => 'followRequest'
             ],
         );
@@ -51,7 +51,7 @@ class FollowsController extends Controller
         }
 
         if ($follow['attached']) {
-            $notification = Notification::create(
+            Notification::create(
                 [
                     'mem_id' => $user->id,
                     'target_mem_id' => $me->id,
@@ -65,7 +65,7 @@ class FollowsController extends Controller
                 $user->fcm_token,
                 [
                     'title' => '알림',
-                    'body' => $me->name . '님이' . ' ' . '회원님을 팔로우 합니다'
+                    'body' => $me->name . '님이' . ' ' . '회원님을 팔로우 하기 시작했습니다'
                 ],
                 [
                     'id' => $user->id,
