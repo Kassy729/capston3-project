@@ -26,23 +26,11 @@ class CommentController extends Controller
                 'user_id' => $me->id,
             ]
         );
+
+        //fcm알림설정
         $post = Post::where('id', '=', $id)->first();
         $user = User::find($post->user_id);
 
-        if ($me->id == $user->id) {
-            if ($comment) {
-                return response([
-                    'message' => ['댓글달기 성공'],
-                    'comment' => $comment
-                ], 201);
-            } else {
-                return response([
-                    'message' => ['실패']
-                ], 401);
-            }
-        }
-
-        //fcm알림설정
         $notification = Notification::create(
             [
                 'mem_id' => $user->id,
@@ -69,6 +57,7 @@ class CommentController extends Controller
         );
 
         if ($comment) {
+            $comment['name'] = $me->name;
             return response([
                 'message' => ['댓글달기 성공'],
                 'comment' => $comment
