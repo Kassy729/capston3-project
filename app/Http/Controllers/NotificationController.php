@@ -89,7 +89,15 @@ class NotificationController extends Controller
 
     public function delete($id)
     {
-        ModelsNotification::where('not_id', '=', $id)->delete();
-        return response('', 200);
+        $notification = ModelsNotification::where('not_id', '=', $id);
+
+        if ($notification) {
+            $notification->delete();
+            return response([
+                'message' => '알림 삭제 성공',
+            ], 200);
+        } else {
+            return response('', 401);
+        }
     }
 }

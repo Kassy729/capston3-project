@@ -50,7 +50,6 @@ class BadgeController extends Controller
         }
 
 
-
         //달리기 기록
         $runData = Post::where('user_id', '=', $user->id)->where('event', '=', 'R')->get();
         //누적거리
@@ -79,6 +78,7 @@ class BadgeController extends Controller
         if ($run_altitude >= 10000) {
             Badge::where('user_id', '=', $user->id)->update(['run_altitude' => true]);
         }
+
 
         //코스
 
