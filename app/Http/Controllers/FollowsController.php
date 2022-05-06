@@ -43,21 +43,48 @@ class FollowsController extends Controller
     public function store(User $user)
     {
         //현재 로그인한 유저의 id
-        $me = Auth::user();
+        $me = User::where('id', '=', Auth::user()->id)->first();
+
 
         if ($user->id != $me->id) {
-            $follow = $user->followers()->toggle($me->id);
+            $follow = $me->followers()->toggle($user->id);
         } else {
             return response('본인은 팔로우할 수 없습니다', 400);
         }
 
         if ($follow['attached']) {
+            //팔로우를 수락했을 때 내가 받는 시작 알림
+            $notification = Notification::create(
+                [
+                    'mem_id' => $me->id,
+                    'target_mem_id' => $user->id,
+                    'not_type' => 'follow',
+                    'not_message' => $user->name . '님이' . ' ' . '회원님을 팔로우 하기 시작했습니다',
+                    'not_url' => '',
+                    'read' => false
+                ]
+            );
+            FCMService::send(
+                $me->fcm_token,
+                [
+                    'title' => '알림',
+                    'body' => $user->name . '님이' . ' ' . '회원님을 팔로우 하기 시작했습니다'
+                ],
+                [
+                    'id' => $me->id,
+                    'target_mem_id' => $user->id,
+                    'type' => 'follow',
+                    'notId' => $notification->id,
+                ],
+            );
+
+            //팔로우 수락했을때 알림
             $notification = Notification::create(
                 [
                     'mem_id' => $user->id,
                     'target_mem_id' => $me->id,
                     'not_type' => 'follow',
-                    'not_message' => $me->name . '님이' . ' ' . '회원님을 팔로우 하기 시작했습니다',
+                    'not_message' => $me->name . '님이' . ' ' . '팔로우 요청을 수락했습니다.',
                     'not_url' => '',
                     'read' => false
                 ]
@@ -66,7 +93,7 @@ class FollowsController extends Controller
                 $user->fcm_token,
                 [
                     'title' => '알림',
-                    'body' => $me->name . '님이' . ' ' . '회원님을 팔로우 하기 시작했습니다'
+                    'body' => $me->name . '님이' . ' ' . '팔로우 요청을 수락했습니다.'
                 ],
                 [
                     'id' => $user->id,
@@ -81,5 +108,18 @@ class FollowsController extends Controller
             User::where('id', '=', $user->id)->get(['id', 'sex', 'name', 'profile', 'mmr']),
             200
         );
+    }
+
+    public function un_follow(User $user)
+    {
+        //현재 로그인한 유저의 id
+        $me = User::where('id', '=', Auth::user()->id)->first();
+
+        if ($user->id != $me->id) {
+            $me->followings()->toggle($user->id);
+            return response('', 200);
+        } else {
+            return response('본인은 팔로우할 수 없습니다', 400);
+        }
     }
 }
