@@ -73,7 +73,7 @@ class NotificationController extends Controller
     public function notification()
     {
         $user = Auth::user();
-        $notifications = ModelsNotification::where('mem_id', '=', $user->id)->paginate(10);
+        $notifications = ModelsNotification::where('mem_id', '=', $user->id)->orderby('created_at', 'desc')->paginate(10);
 
         if ($notifications) {
             return response($notifications, 200);

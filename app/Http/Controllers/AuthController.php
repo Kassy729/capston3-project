@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Badge;
 use App\Models\DayRecord;
 use App\Models\Follow;
 use App\Models\Image;
@@ -37,6 +38,21 @@ class AuthController extends Controller
             'location' => $request->input('location'),
             'mmr' => 0,
             'run_mmr' => 0
+        ]);
+
+        Badge::create([
+            'user_id' => $user->id,
+            'first_exercise' => false,
+            'bike_distance' => false,
+            'bike_distance2' => false,
+            'bike_distance3' => false,
+            'bike_altitude' => false,
+            'run_distance' => false,
+            'run_distance2' => false,
+            'run_distance3' => false,
+            'run_altitude' => false,
+            'make_track' => false,
+            'rank' => false,
         ]);
 
         return response([

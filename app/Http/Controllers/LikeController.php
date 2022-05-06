@@ -45,7 +45,8 @@ class LikeController extends Controller
                     ],
                     [
                         'postId' => $post->id,
-                        'type' => 'like'
+                        'type' => 'like',
+                        'notId' => $notification->id
                     ],
                 );
             }

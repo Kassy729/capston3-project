@@ -51,7 +51,7 @@ class FollowsController extends Controller
         }
 
         if ($follow['attached']) {
-            Notification::create(
+            $notification = Notification::create(
                 [
                     'mem_id' => $user->id,
                     'target_mem_id' => $me->id,
@@ -69,7 +69,8 @@ class FollowsController extends Controller
                 ],
                 [
                     'id' => $user->id,
-                    'type' => 'follow'
+                    'type' => 'follow',
+                    'notId' => $notification->id
                 ],
             );
         };

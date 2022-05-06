@@ -123,6 +123,7 @@ class PostController extends Controller
             }
         }
 
+        //명준-> 스위치써라, 메세지만 따로 빼라
         if ($request->kind == "자유") {
             //이미지 유무 확인후 있으면 save메서드 호출
             if ($request->hasFile('img')) {
@@ -185,7 +186,7 @@ class PostController extends Controller
         array_push($array, $id);
 
         //팔로잉한 아이디의 포스트만 시간별로 출력
-        $post = Post::with(['user', 'likes', 'image'])->whereIn('user_id', $array)->where('range', 'public')->orderby('created_at', 'desc')->paginate(10);
+        $post = Post::with(['user', 'likes', 'image'])->whereIn('user_id', $array)->where('range', 'public')->orderby('updated_at', 'desc')->paginate(10);
 
 
         $opponent_post = array();
@@ -193,7 +194,7 @@ class PostController extends Controller
         $array = array();
         $array2 = array();
 
-
+        //
         for ($i = 0; $i < count($post); $i++) {
             if ($post[$i]->opponent_id) {
                 $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
@@ -239,7 +240,7 @@ class PostController extends Controller
         $user = Auth::user()->id;
 
         //최근 게시물 순으로 보여줌
-        $post = Post::with(['user', 'likes', 'comment', 'image', 'mapImage'])->orderby('created_at', 'desc')->where('user_id', '=', $user)->paginate(10);
+        $post = Post::with(['user', 'likes', 'comment', 'image', 'mapImage'])->orderby('updated_at', 'desc')->where('user_id', '=', $user)->paginate(10);
 
 
         $opponent_post = array();

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\GoalController;
@@ -138,5 +139,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/progress', [GoalController::class, 'progressGoal']);
         Route::get('/all', [GoalController::class, 'allGoal']);
         Route::delete('/delete/{id}', [GoalController::class, 'delete']);
+    });
+
+    //뱃지
+    Route::prefix('/badge')->group(function () {
+        Route::get('/', [BadgeController::class, 'badge']);
     });
 });
