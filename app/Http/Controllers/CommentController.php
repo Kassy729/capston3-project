@@ -57,10 +57,10 @@ class CommentController extends Controller
         );
 
         if ($comment) {
-            $comment['name'] = $me->name;
             return response([
                 'message' => ['댓글달기 성공'],
-                'comment' => $comment
+                'comment' => $comment,
+                'name' => $me->name
             ], 201);
         } else {
             return response([
