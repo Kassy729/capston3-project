@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Badge;
 use App\Models\DayRecord;
 use App\Models\Follow;
 use App\Models\Goal;
@@ -34,18 +35,15 @@ class PostController extends Controller
             array_push($follow, $followings[$i]['following_id']);
         }
 
-        $request['dd'] = 'test';
-
         //종목별 최근 일주일 운동기록
-        // $this->weekRecord($request);
+        //조회하는 유저의 주간 자전거 누적 거리를 계산하는 함수
+        $request['id'] = $id;
+        $request['event'] = 'B';
+        $bike_week_data = $this->weekData($request);
 
-        //팔로우 유무 확인
-        $following = Follow::where("follower_id", '=', $me->id)->get('following_id');
-        $follow_array = array();
-        for ($i = 0; $i < count($following); $i++) {
-            array_push($follow_array, $following[$i]->following_id);
-        }
-        $followCheck = in_array($id, $follow_array);
+        //조회하는 유저의 주간 달리기 누적 거리를 계산하는 함수
+        $request['event'] = 'R';
+        $run_week_data = $this->weekData($request);
 
 
         //운동비율
@@ -60,31 +58,31 @@ class PostController extends Controller
             $run_percentage = 0;
         }
 
+        //조회하기
+        $profile = User::with(['followings', 'followers', 'badges'])->where('id', '=', $id)->first();
+
+        $profile['bikePercentage'] = $bike_percentage;
+        $profile['runPercentage'] = $run_percentage;
+        $profile['bikeWeekData'] = $bike_week_data;
+        $profile['runWeekData'] = $run_week_data;
+
         //조회한 유저의 게시글(팔로워되어있을때만 조회 가능)
         $posts = Post::where('user_id', '=', $id)->where('range', '=', 'public')->get();
-
-
 
         if ($user) {
             if (in_array($user->id, $follow)) {
                 //팔로우 되어 있을 경우
-                $profile = User::with(['followings', 'followers', 'badges'])->where('id', '=', $id)->first();
                 $profile['posts'] = $posts;
-                $profile['bikePercentage'] = $bike_percentage;
-                $profile['runPercentage'] = $run_percentage;
-                $profile['followCheck'] = $followCheck;
-                return response($profile, 200);
+                $profile['followCheck'] = true;
             } else if ($user->id == $me->id) {
                 //나 자신일 경우
-                $profile = User::with(['followings', 'followers', 'posts', 'badges'])->where('id', '=', $id)->first();
-                $profile['followCheck'] = $followCheck;
-                return response($profile, 200);
+                $profile['posts'] = $posts;
+                $profile['followCheck'] = false;
             } else {
                 // 팔로우 안되어 있을 경우
-                $profile = User::with(['followings', 'followers', 'badges'])->where('id', '=', $id)->first();
-                $profile['followCheck'] = $followCheck;
-                return response($profile, 200);
+                $profile['followCheck'] = false;
             }
+            return response($profile, 200);
         } else {
             return response('', 204);
         }
@@ -368,6 +366,8 @@ class PostController extends Controller
         $user = Auth::user()->id;
         $event = $request->query('event');
 
+        return $this->weekData($request);
+
         //주간 체크
         $today = time();
         $week = date("w");
@@ -449,6 +449,99 @@ class PostController extends Controller
         ]);
 
         return response($weekRecord, 200);
+    }
+
+    protected function weekData($request)
+    {
+        if ($request['id']) {
+            $user = $request['id'];
+            $event = $request['event'];
+        } else {
+            $user = Auth::user()->id;
+            $event = $request->query('event');
+        }
+
+        //주간 체크
+        $today = time();
+        $week = date("w");
+        $week_first = $today - ($week * 86400);  //이번주의 첫째 날
+        $week_last = $week_first + (6 * 86400);  //이번주의 마지막 날
+        $first = date('Y-m-d', $week_first);
+        $last = date('Y-m-d', $week_last);
+
+        $day = time();
+        $one = $today - 86400;
+        $two = $one - 86400;
+        $three = $two - 86400;
+        $four = $three - 86400;
+        $five = $four - 86400;
+        $six = $five - 86400;
+
+        $day2 = date('Y-m-d', time());
+        $one2 = date('Y-m-d', $today - 86400);
+        $two2 = date('Y-m-d', $one - 86400);
+        $three2 = date('Y-m-d', $two - 86400);
+        $four2 = date('Y-m-d', $three - 86400);
+        $five2 = date('Y-m-d', $four - 86400);
+        $six2 = date('Y-m-d', $five - 86400);
+
+
+        $today = 0;
+        $oneDayAgo = 0;
+        $twoDayAgo = 0;
+        $threeDayAgo = 0;
+        $fourDayAgo = 0;
+        $fiveDayAgo = 0;
+        $sixDayAgo = 0;
+
+        $day3 = Post::where('user_id', '=', $user)->where('date', '=', $day2)->where('event', '=', $event)->get('distance');
+
+        $one3 = Post::where('user_id', '=', $user)->where('date', '=', $one2)->where('event', '=', $event)->get('distance');
+
+        $two3 = Post::where('user_id', '=', $user)->where('date', '=', $two2)->where('event', '=', $event)->get('distance');
+
+        $three3 = Post::where('user_id', '=', $user)->where('date', '=', $three2)->where('event', '=', $event)->get('distance');
+
+        $four3 = Post::where('user_id', '=', $user)->where('date', '=', $four2)->where('event', '=', $event)->get('distance');
+
+        $five3 = Post::where('user_id', '=', $user)->where('date', '=', $five2)->where('event', '=', $event)->get('distance');
+
+        $six3 = Post::where('user_id', '=', $user)->where('date', '=', $six2)->where('event', '=', $event)->get('distance');
+
+
+        for ($i = 0; $i < count($day3); $i++) {
+            $today += $day3[$i]->distance;
+        }
+        for ($i = 0; $i < count($one3); $i++) {
+            $oneDayAgo += $one3[$i]->distance;
+        }
+        for ($i = 0; $i < count($two3); $i++) {
+            $twoDayAgo += $two3[$i]->distance;
+        }
+        for ($i = 0; $i < count($three3); $i++) {
+            $threeDayAgo += $three3[$i]->distance;
+        }
+        for ($i = 0; $i < count($four3); $i++) {
+            $fourDayAgo += $four3[$i]->distance;
+        }
+        for ($i = 0; $i < count($five3); $i++) {
+            $fiveDayAgo += $five3[$i]->distance;
+        }
+        for ($i = 0; $i < count($six3); $i++) {
+            $sixDayAgo += $six3[$i]->distance;
+        }
+
+        $weekRecord = ([
+            "today" => $today,
+            "oneDayAgo" => $oneDayAgo,
+            "twoDayAgo" => $twoDayAgo,
+            "threeDayAgo" => $threeDayAgo,
+            "fourDayAgo" => $fourDayAgo,
+            "fiveDayAgo" => $fiveDayAgo,
+            "sixDayAgo" => $sixDayAgo
+        ]);
+
+        return $weekRecord;
     }
 
 
