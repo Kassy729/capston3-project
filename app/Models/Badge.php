@@ -23,4 +23,9 @@ class Badge extends Model
         "make_track",
         "rank"
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

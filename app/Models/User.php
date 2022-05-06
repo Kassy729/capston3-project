@@ -57,6 +57,11 @@ class User extends Authenticatable
         return $this->hasMany(Post::class);
     }
 
+    public function badges()
+    {
+        return $this->hasOne(Badge::class);
+    }
+
     public function followings()
     {
         return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id');

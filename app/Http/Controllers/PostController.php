@@ -34,18 +34,56 @@ class PostController extends Controller
             array_push($follow, $followings[$i]['following_id']);
         }
 
+        $request['dd'] = 'test';
+
+        //종목별 최근 일주일 운동기록
+        // $this->weekRecord($request);
+
+        //팔로우 유무 확인
+        $following = Follow::where("follower_id", '=', $me->id)->get('following_id');
+        $follow_array = array();
+        for ($i = 0; $i < count($following); $i++) {
+            array_push($follow_array, $following[$i]->following_id);
+        }
+        $followCheck = in_array($id, $follow_array);
+
+
+        //운동비율
+        $total_count = Post::where('user_id', '=', $id)->count();
+        $bike_count = Post::where('user_id', '=', $id)->where('event', '=', 'B')->count();
+
+        if ($total_count != 0) {
+            $bike_percentage = ($bike_count / $total_count) * 100;
+            $run_percentage = 100 - $bike_percentage;
+        } else {
+            $bike_percentage = 0;
+            $run_percentage = 0;
+        }
+
+        //조회한 유저의 게시글(팔로워되어있을때만 조회 가능)
         $posts = Post::where('user_id', '=', $id)->where('range', '=', 'public')->get();
+
+
 
         if ($user) {
             if (in_array($user->id, $follow)) {
-                $profile = User::where('id', '=', $id)->first();
+                //팔로우 되어 있을 경우
+                $profile = User::with(['followings', 'followers', 'badges'])->where('id', '=', $id)->first();
                 $profile['posts'] = $posts;
+                $profile['bikePercentage'] = $bike_percentage;
+                $profile['runPercentage'] = $run_percentage;
+                $profile['followCheck'] = $followCheck;
                 return response($profile, 200);
             } else if ($user->id == $me->id) {
-                $profile = User::with(['posts'])->where('id', '=', $id)->first();
+                //나 자신일 경우
+                $profile = User::with(['followings', 'followers', 'posts', 'badges'])->where('id', '=', $id)->first();
+                $profile['followCheck'] = $followCheck;
                 return response($profile, 200);
             } else {
-                return response($user, 200);
+                // 팔로우 안되어 있을 경우
+                $profile = User::with(['followings', 'followers', 'badges'])->where('id', '=', $id)->first();
+                $profile['followCheck'] = $followCheck;
+                return response($profile, 200);
             }
         } else {
             return response('', 204);
@@ -122,7 +160,6 @@ class PostController extends Controller
                 $input["img"] = Storage::url($path[$i]);
             }
         }
-
         //명준-> 스위치써라, 메세지만 따로 빼라
         if ($request->kind == "자유") {
             //이미지 유무 확인후 있으면 save메서드 호출
@@ -412,76 +449,9 @@ class PostController extends Controller
         ]);
 
         return response($weekRecord, 200);
-
-
-        // $post_distance = Post::where('user_id', '=', $user->id)->where('date', '>=', $first)->where('date', '<=', $last)->where('event', '=', $event)->get('distance');
-        // $post_date = Post::where('user_id', '=', $user->id)->where('date', '>=', $first)->where('date', '<=', $last)->where('event', '=', $event)->get('date');
-        // $count = Post::where('user_id', '=', $user->id)->where('date', '>=', $first)->where('date', '<=', $last)->where('event', '=', $event)->count();
-
-        // //요일별 저장 함수 실행
-        // return $this->weekData($post_distance, $post_date, $count);
     }
 
-    // //날짜 데이터를 보고 요일별로 나누어 요일별 누적 거리 계산
-    // protected function weekData($post_distance, $post_date, $count)
-    // {
-    //     $array_week = array("일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일");
 
-    //     $Mon = 0;
-    //     $Tue = 0;
-    //     $Wed = 0;
-    //     $Tur = 0;
-    //     $Fri = 0;
-    //     $Sat = 0;
-    //     $Sun = 0;
-
-    //     //반복문으로 요일별로 확인하여 누적 거리 저장
-    //     for ($i = 0; $i < $count; $i++) {
-    //         $day = $post_date[$i]->date;
-    //         $weekday = $array_week[date('w', strtotime($day))];
-    //         if ($weekday == "월요일") {
-    //             $Mon += $post_distance[$i]->distance;
-    //         } else if ($weekday == "화요일") {
-    //             $Tue += $post_distance[$i]->distance;
-    //         } else if ($weekday == "수요일") {
-    //             $Wed += $post_distance[$i]->distance;
-    //         } else if ($weekday == "목요일") {
-    //             $Tur += $post_distance[$i]->distance;
-    //         } else if ($weekday == "금요일") {
-    //             $Fri += $post_distance[$i]->distance;
-    //         } else if ($weekday == "토요일") {
-    //             $Sat += $post_distance[$i]->distance;
-    //         } else if ($weekday == "일요일") {
-    //             $Sun += $post_distance[$i]->distance;
-    //         }
-    //     }
-
-    //     //요일별 누적 거리
-    //     $weekRecord = ([
-    //         "Mon" => $Mon,
-    //         "Tue" => $Tue,
-    //         "Wed" => $Wed,
-    //         "Tur" => $Tur,
-    //         "Fri" => $Fri,
-    //         "Sat" => $Sat,
-    //         "Sun" => $Sun
-    //     ]);
-
-    //     if ($weekRecord) {
-    //         return response($weekRecord, 200);
-    //     } else {
-    //         return response([
-    //             "Mon" => 0,
-    //             "Tue" => 0,
-    //             "Wed" => 0,
-    //             "Tur" => 0,
-    //             "Fri" => 0,
-    //             "Sat" => 0,
-    //             "Sun" => 0,
-    //             200
-    //         ]);
-    //     }
-    // }
 
 
     //mmr상승 함수
@@ -546,3 +516,66 @@ class PostController extends Controller
         }
     }
 }
+
+
+
+// //날짜 데이터를 보고 요일별로 나누어 요일별 누적 거리 계산
+    // protected function weekData($post_distance, $post_date, $count)
+    // {
+    //     $array_week = array("일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일");
+
+    //     $Mon = 0;
+    //     $Tue = 0;
+    //     $Wed = 0;
+    //     $Tur = 0;
+    //     $Fri = 0;
+    //     $Sat = 0;
+    //     $Sun = 0;
+
+    //     //반복문으로 요일별로 확인하여 누적 거리 저장
+    //     for ($i = 0; $i < $count; $i++) {
+    //         $day = $post_date[$i]->date;
+    //         $weekday = $array_week[date('w', strtotime($day))];
+    //         if ($weekday == "월요일") {
+    //             $Mon += $post_distance[$i]->distance;
+    //         } else if ($weekday == "화요일") {
+    //             $Tue += $post_distance[$i]->distance;
+    //         } else if ($weekday == "수요일") {
+    //             $Wed += $post_distance[$i]->distance;
+    //         } else if ($weekday == "목요일") {
+    //             $Tur += $post_distance[$i]->distance;
+    //         } else if ($weekday == "금요일") {
+    //             $Fri += $post_distance[$i]->distance;
+    //         } else if ($weekday == "토요일") {
+    //             $Sat += $post_distance[$i]->distance;
+    //         } else if ($weekday == "일요일") {
+    //             $Sun += $post_distance[$i]->distance;
+    //         }
+    //     }
+
+    //     //요일별 누적 거리
+    //     $weekRecord = ([
+    //         "Mon" => $Mon,
+    //         "Tue" => $Tue,
+    //         "Wed" => $Wed,
+    //         "Tur" => $Tur,
+    //         "Fri" => $Fri,
+    //         "Sat" => $Sat,
+    //         "Sun" => $Sun
+    //     ]);
+
+    //     if ($weekRecord) {
+    //         return response($weekRecord, 200);
+    //     } else {
+    //         return response([
+    //             "Mon" => 0,
+    //             "Tue" => 0,
+    //             "Wed" => 0,
+    //             "Tur" => 0,
+    //             "Fri" => 0,
+    //             "Sat" => 0,
+    //             "Sun" => 0,
+    //             200
+    //         ]);
+    //     }
+    // }

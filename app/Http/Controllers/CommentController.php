@@ -63,7 +63,8 @@ class CommentController extends Controller
             [
                 'postId' => $id,
                 'type' => 'comment',
-                'notId' => $notification->id
+                'notId' => $notification->id,
+                'target_mem' => $me,
             ],
         );
 
