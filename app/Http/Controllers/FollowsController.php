@@ -34,6 +34,7 @@ class FollowsController extends Controller
             ],
             [
                 'id' => $user,
+                'mem_id' => $me,
                 'type' => 'followRequest'
             ],
         );
@@ -45,7 +46,7 @@ class FollowsController extends Controller
         $me = Auth::user();
 
         if ($user->id != $me->id) {
-            $follow = $user->followings()->toggle($me->id);
+            $follow = $user->followers()->toggle($me->id);
         } else {
             return response('본인은 팔로우할 수 없습니다', 400);
         }
@@ -69,7 +70,7 @@ class FollowsController extends Controller
                 ],
                 [
                     'id' => $user->id,
-                    'target_mem' => $me,
+                    'target_mem_id' => $me->id,
                     'type' => 'follow',
                     'notId' => $notification->id,
                 ],

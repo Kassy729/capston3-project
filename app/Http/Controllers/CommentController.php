@@ -119,7 +119,6 @@ class CommentController extends Controller
 
     public function destroy($id)
     {
-
         $user = Auth::user()->id;
         $comment = Comment::find($id);
 
@@ -127,7 +126,7 @@ class CommentController extends Controller
 
         if ($user == $user_id) {
             $comment->delete();
-            return "댓글 삭제 성공";
+            return response("댓글 삭제 성공", 200);
         } else {
             return abort(401);
         }
