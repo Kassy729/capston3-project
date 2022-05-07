@@ -81,6 +81,6 @@ class BadgeController extends Controller
 
 
         //코스
-
+        
     }
 }

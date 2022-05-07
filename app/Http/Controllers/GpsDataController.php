@@ -14,7 +14,7 @@ class GpsDataController extends Controller
         // return $match_gps_id = $random_match_post->gps_id;
 
         //Node에서 GPS_data_id를 받아와서 활동에 저장
-        $response = Http::get("http://13.124.24.179/api/gpsdata/$gpsId");
+        $response = Http::get(env('NODE_SERVER_URL') . "/api/gpsdata/$gpsId");
 
         $gpsData = json_decode($response->getBody(), true);
 
@@ -31,7 +31,7 @@ class GpsDataController extends Controller
     {
         $gpsId = $request->query('gpsId');
 
-        $response = Http::get("http://13.124.24.179/api/gpsdata/$gpsId/check");
+        $response = Http::get(env('NODE_SERVER_URL') . "/api/gpsdata/$gpsId/check");
         $gpsData = json_decode($response->getBody(), true);
 
         return $gpsData;

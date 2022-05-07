@@ -21,10 +21,12 @@ use phpDocumentor\Reflection\Types\Boolean;
 use SebastianBergmann\Environment\Console;
 use App\Services\FCMService;
 
+
 class PostController extends Controller
 {
     public function profile($id)
     {
+        return $this->test();
         $me = Auth::user();
         $user = User::find($id);
 
@@ -117,7 +119,7 @@ class PostController extends Controller
         }
 
         //Node에서 GPS_data_id를 받아와서 활동에 저장
-        $response = Http::post('http://13.124.24.179/api/gpsdata', $gpsData);
+        $response = Http::post(env('NODE_SERVER_URL') . '/api/gpsdata', $gpsData);
 
 
         //JSON 문자열을 변환하여 값을 추출
@@ -250,15 +252,6 @@ class PostController extends Controller
             $post[$i]['likeCheck'] = in_array($id, $array2[$i]);
         }
 
-
-        //gpsData를 요청해서 같이 묶어서 보내줘야함
-        // for ($i = 0; $i < $post->count(); $i++) {
-        //     $gpsId = $post[$i]->gps_id;
-        //     $response = Http::get("http://13.124.24.179/api/gpsdata/$gpsId");
-        //     $data = json_decode($response->getBody(), true);
-        //     array_push($gpsData, $data);
-        //     $post[$i]["gpsData"] = $gpsData[$i];
-        // }
         if ($post) {
             return response(
                 $post,
@@ -346,7 +339,7 @@ class PostController extends Controller
             // if ($post->img) {
             //     Storage::disk('s3')->delete('https://run-images.s3.ap-northeast-2.amazonaws.com/mapImage/LoS68WJHuvEu5tjPPM9R0aLqnjw4baLD52YHiDkv.jpg');
             // };
-            Storage::disk('s3')->deleteDirectory('https://run-images.s3.ap-northeast-2.amazonaws.com/mapImage/SeLYgWx2t5NFaC3L3mSMJYrb9yzrSyYPcMoggy0f.jpg');
+            // Storage::disk('s3')->deleteDirectory('https://run-images.s3.ap-northeast-2.amazonaws.com/mapImage/SeLYgWx2t5NFaC3L3mSMJYrb9yzrSyYPcMoggy0f.jpg');
 
             $post->delete();
             return $post->id;
@@ -363,91 +356,7 @@ class PostController extends Controller
          한주의 기록인지 아닌지 대소 비교
          그것을 요일별로 나눈다
         */
-        $user = Auth::user()->id;
-        $event = $request->query('event');
-
-        return $this->weekData($request);
-
-        //주간 체크
-        $today = time();
-        $week = date("w");
-        $week_first = $today - ($week * 86400);  //이번주의 첫째 날
-        $week_last = $week_first + (6 * 86400);  //이번주의 마지막 날
-        $first = date('Y-m-d', $week_first);
-        $last = date('Y-m-d', $week_last);
-
-        $day = time();
-        $one = $today - 86400;
-        $two = $one - 86400;
-        $three = $two - 86400;
-        $four = $three - 86400;
-        $five = $four - 86400;
-        $six = $five - 86400;
-
-        $day2 = date('Y-m-d', time());
-        $one2 = date('Y-m-d', $today - 86400);
-        $two2 = date('Y-m-d', $one - 86400);
-        $three2 = date('Y-m-d', $two - 86400);
-        $four2 = date('Y-m-d', $three - 86400);
-        $five2 = date('Y-m-d', $four - 86400);
-        $six2 = date('Y-m-d', $five - 86400);
-
-
-        $today = 0;
-        $oneDayAgo = 0;
-        $twoDayAgo = 0;
-        $threeDayAgo = 0;
-        $fourDayAgo = 0;
-        $fiveDayAgo = 0;
-        $sixDayAgo = 0;
-
-        $day3 = Post::where('user_id', '=', $user)->where('date', '=', $day2)->where('event', '=', $event)->get('distance');
-
-        $one3 = Post::where('user_id', '=', $user)->where('date', '=', $one2)->where('event', '=', $event)->get('distance');
-
-        $two3 = Post::where('user_id', '=', $user)->where('date', '=', $two2)->where('event', '=', $event)->get('distance');
-
-        $three3 = Post::where('user_id', '=', $user)->where('date', '=', $three2)->where('event', '=', $event)->get('distance');
-
-        $four3 = Post::where('user_id', '=', $user)->where('date', '=', $four2)->where('event', '=', $event)->get('distance');
-
-        $five3 = Post::where('user_id', '=', $user)->where('date', '=', $five2)->where('event', '=', $event)->get('distance');
-
-        $six3 = Post::where('user_id', '=', $user)->where('date', '=', $six2)->where('event', '=', $event)->get('distance');
-
-
-        for ($i = 0; $i < count($day3); $i++) {
-            $today += $day3[$i]->distance;
-        }
-        for ($i = 0; $i < count($one3); $i++) {
-            $oneDayAgo += $one3[$i]->distance;
-        }
-        for ($i = 0; $i < count($two3); $i++) {
-            $twoDayAgo += $two3[$i]->distance;
-        }
-        for ($i = 0; $i < count($three3); $i++) {
-            $threeDayAgo += $three3[$i]->distance;
-        }
-        for ($i = 0; $i < count($four3); $i++) {
-            $fourDayAgo += $four3[$i]->distance;
-        }
-        for ($i = 0; $i < count($five3); $i++) {
-            $fiveDayAgo += $five3[$i]->distance;
-        }
-        for ($i = 0; $i < count($six3); $i++) {
-            $sixDayAgo += $six3[$i]->distance;
-        }
-
-        $weekRecord = ([
-            "today" => $today,
-            "oneDayAgo" => $oneDayAgo,
-            "twoDayAgo" => $twoDayAgo,
-            "threeDayAgo" => $threeDayAgo,
-            "fourDayAgo" => $fourDayAgo,
-            "fiveDayAgo" => $fiveDayAgo,
-            "sixDayAgo" => $sixDayAgo
-        ]);
-
+        $weekRecord = $this->weekData($request);
         return response($weekRecord, 200);
     }
 

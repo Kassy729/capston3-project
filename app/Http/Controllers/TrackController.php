@@ -13,14 +13,14 @@ class TrackController extends Controller
     {
         $gpsData = $request->gpsData;
 
-        $response = Http::post('http://13.124.24.179/api/tracks', $gpsData);
+        $response = Http::post(env('NODE_SERVER_URL') . '/api/tracks', $gpsData);
         return json_decode($response, true);
     }
 
     public function allTracks()
     {
         //Node에서 track_id를 리턴
-        $response = Http::get('http://13.124.24.179/api/tracks');
+        $response = Http::get(env('NODE_SERVER_URL') . '/api/tracks');
         //JSON 문자열을 변환하여 값을 추출
         return json_decode($response, true);
     }
@@ -36,7 +36,7 @@ class TrackController extends Controller
         //쿼리스트링을 만듦
         $query = "bounds" . '=' . $bound1  . '&' .  "bounds" . '=' . $bound2 . '&' . "bounds" . '=' . $bound3 . '&' . "bounds" . '=' . $bound4 . '&' . "event" . '=' . $event;
         //Node에서 track_id를 리턴
-        $response = Http::get("http://13.124.24.179/api/tracks/search?$query");
+        $response = Http::get(env('NODE_SERVER_URL') . "/api/tracks/search?$query");
 
         //JSON 문자열을 변환하여 값을 추출
         return json_decode($response, true);
@@ -46,7 +46,7 @@ class TrackController extends Controller
     {
         $id = $request->query('track_id');
         //Node에서 track_id를 리턴
-        $response = Http::get("http://13.124.24.179/api/tracks/$id");
+        $response = Http::get(env('NODE_SERVER_URL') . "/api/tracks/$id");
         //JSON 문자열을 변환하여 값을 추출
         return json_decode($response, true);
     }

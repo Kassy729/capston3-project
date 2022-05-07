@@ -32,7 +32,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->input('password')),
             'sex' => $request->input('sex'),
             'weight' => $request->input('weight'),
-            'profile' => "https://run-images.s3.ap-northeast-2.amazonaws.com/default-profile/KakaoTalk_Photo_2022-04-17-14-55-41.png",
+            'profile' => env('DEFAULT_PROFILE'),
             'birth' => $request->input('birth'),
             'introduce' => $request->input('introduce'),
             'location' => $request->input('location'),
