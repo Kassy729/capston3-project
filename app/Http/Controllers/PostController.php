@@ -77,7 +77,7 @@ class PostController extends Controller
                 $profile['followCheck'] = true;
             } else if ($user->id == $me->id) {
                 //나 자신일 경우
-                $profile['posts'] = $posts;
+                $profile['posts'] = Post::where('user_id', '=', $id)->get();
                 $profile['followCheck'] = false;
             } else {
                 // 팔로우 안되어 있을 경우

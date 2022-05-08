@@ -55,6 +55,7 @@ class TrackController extends Controller
     {
         $user = Auth::user();
 
+        //쿼리스트링으로 체크포인트, 트랙아이디, 시간을 받음
         $checkPoint = $request->query('checkPoint');
         $track_id = $request->query('track_id');
         $time = $request->query('time');
