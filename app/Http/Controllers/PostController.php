@@ -26,7 +26,6 @@ class PostController extends Controller
 {
     public function profile($id)
     {
-        return $this->test();
         $me = Auth::user();
         $user = User::find($id);
 
