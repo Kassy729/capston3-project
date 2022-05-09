@@ -26,12 +26,8 @@ class PostController extends Controller
 {
     public function profile(Request $request)
     {
-        if ($request->query('me')) {
-            $me = $request->query('me');
-        } else {
-            $me = Auth::user()->id;
-        }
-
+        // $me = $request->query('me');
+        $me = Auth::user()->id;
         $id = $request->query('id');
         $user = User::find($id);
 

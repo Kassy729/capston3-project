@@ -49,7 +49,6 @@ Route::get('/gpsData/check', [GpsDataController::class, 'gpsDataCheck']);
 //모든유저검색
 Route::get('/allUser', [AuthController::class, 'allUser']);
 //프로필 조회
-Route::get('/profile', [PostController::class, "profile"]);
 
 
 
@@ -62,6 +61,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //프로필 편집
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::patch('/fcmToken', [AuthController::class, 'fcmToken']);
+    Route::get('/profile', [PostController::class, "profile"]);
+
 
     // 운동sns
     Route::prefix('post')->group(function () {
