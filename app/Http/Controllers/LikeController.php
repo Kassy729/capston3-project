@@ -19,6 +19,9 @@ class LikeController extends Controller
         //상대방
         $user = User::find($post->user_id);
         $like = $post->likes()->toggle($me->id);
+        $like['likeCount'] = count($post->likes);
+
+
 
         if ($me->id == $user->id) {
             return $like;
