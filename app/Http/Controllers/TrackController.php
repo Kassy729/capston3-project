@@ -63,6 +63,7 @@ class TrackController extends Controller
         //내 기존 기록 불러옴
         $myCheckPoint = CheckPoint::where('checkPoint', '=', $checkPoint)->where('track_id', '=', $track_id)->where('user_id', '=', $user->id)->first();
 
+        //나를 제외한 다른 사람들의 체크포인트 기록을 가져옴
         $allCheckPoint = CheckPoint::where('checkPoint', '=', $checkPoint)->where('track_id', '=', $track_id)->where('user_id', '!=', $user->id)->orderby('time')->get();
 
         //트랙에서 내 기록이 없거나 더 좋은 결과를 냈을 경우 체크포인트 저장

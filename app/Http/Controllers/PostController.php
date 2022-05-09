@@ -240,6 +240,7 @@ class PostController extends Controller
                 $post[$i]["opponent_post"] = $opponent_post[$i];
                 $post[$i]['opponent_post']['user'] = $opponent_user[$i];
             }
+            //좋아요 체크
             if (count($post[$i]->likes) !== 0) {
                 for ($y = 0; $y < count($post[$i]->likes); $y++) {
                     array_push($array, $post[$i]->likes[$y]['id']);
@@ -298,6 +299,13 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::with('user', 'likes', 'image')->where('id', '=', $id)->first();
+
+        //좋아요 체크
+        $array = array();
+        for ($i = 0; $i < count($post->likes); $i++) {
+            array_push($array, $post->likes[$i]['id']);
+        }
+        $post['likeCheck'] = in_array(Auth::user()->id, $array);
         return response($post, 200);
     }
 
