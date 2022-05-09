@@ -26,38 +26,36 @@ class GoalController extends Controller
         $user = Auth::user();
 
         // (('사용자입력시작일' <= DB시작일 and DB시작일 <= '사용자입력종료일') or ('사용자입력시작일' <= DB종료일 and DB종료일 <= '사용자입력종료일') or (DB시작일 <= '사용자입력시작일' and '사용자입력종료일' <= DB종료일))
-        if ($event == 'B') {
-            $query_one = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'B')->where('firstDate', '>=', $firstDate)->where('firstDate', '<=', $lastDate);
+        // if ($event == 'B') {
+        //     $query_one = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'B')->where('firstDate', '>=', $firstDate)->where('firstDate', '<=', $lastDate);
 
-            $query_two = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'B')->where('lastDate', '>=', $firstDate)->where('lastDate', '<=', $lastDate);
+        //     $query_two = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'B')->where('lastDate', '>=', $firstDate)->where('lastDate', '<=', $lastDate);
 
-            $query_three = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'B')->where('firstDate', '<=', $firstDate)->where('lastDate', '>=', $lastDate)->union($query_one)->union($query_two)->get();
-        } else {
-            $query_one = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'R')->where('firstDate', '>=', $firstDate)->where('firstDate', '<=', $lastDate);
+        //     $query_three = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'B')->where('firstDate', '<=', $firstDate)->where('lastDate', '>=', $lastDate)->union($query_one)->union($query_two)->get();
+        // } else {
+        //     $query_one = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'R')->where('firstDate', '>=', $firstDate)->where('firstDate', '<=', $lastDate);
 
-            $query_two = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'R')->where('lastDate', '>=', $firstDate)->where('lastDate', '<=', $lastDate);
+        //     $query_two = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'R')->where('lastDate', '>=', $firstDate)->where('lastDate', '<=', $lastDate);
 
-            $query_three = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'R')->where('firstDate', '<=', $firstDate)->where('lastDate', '>=', $lastDate)->union($query_one)->union($query_two)->get();
-        }
-
-
-        if (count($query_three) == 0) {
-            return response([
-                'goal' => Goal::create([
-                    'user_id' => $user->id,
-                    'title' => $title,
-                    'goalDistance' => $goalDistance,
-                    'firstDate' => $firstDate,
-                    'lastDate' => $lastDate,
-                    'success' => false,
-                    'event' => $event
-                ])
-            ], 201);
-        } else {
-            return response([
-                'message' => '겹치는 날짜는 목표를 설정 할 수 없습니다'
-            ]);
-        }
+        //     $query_three = DB::table('goals')->where('user_id', '=', $user->id)->where('event', '=', 'R')->where('firstDate', '<=', $firstDate)->where('lastDate', '>=', $lastDate)->union($query_one)->union($query_two)->get();
+        // }
+        // if (count($query_three) == 0) {
+        return response([
+            'goal' => Goal::create([
+                'user_id' => $user->id,
+                'title' => $title,
+                'goalDistance' => $goalDistance,
+                'firstDate' => $firstDate,
+                'lastDate' => $lastDate,
+                'success' => false,
+                'event' => $event
+            ])
+        ], 201);
+        // } else {
+        //     return response([
+        //         'message' => '겹치는 날짜는 목표를 설정 할 수 없습니다'
+        //     ]);
+        // }
     }
 
     public function checkGoal()

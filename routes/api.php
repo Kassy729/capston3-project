@@ -32,8 +32,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-
-
 //로그인, 회원가입
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
