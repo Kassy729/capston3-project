@@ -26,13 +26,10 @@ class PostController extends Controller
 {
     public function profile(Request $request)
     {
-        // $me = $request->query('me');
-        $me = Auth::user()->id;
+        $me = $request->query('me');
         $id = $request->query('id');
         $user = User::find($id);
 
-
-        // $me = $request->query();
 
         $followings = Follow::where('follower_id', '=', $me)->get('following_id');
 
