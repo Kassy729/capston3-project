@@ -24,12 +24,21 @@ use App\Services\FCMService;
 
 class PostController extends Controller
 {
-    public function profile($id)
+    public function profile(Request $request)
     {
-        $me = Auth::user();
+        if ($request->query('me')) {
+            $me = $request->query('me');
+        } else {
+            $me = Auth::user()->id;
+        }
+
+        $id = $request->query('id');
         $user = User::find($id);
 
-        $followings = Follow::where('follower_id', '=', $me->id)->get('following_id');
+
+        // $me = $request->query();
+
+        $followings = Follow::where('follower_id', '=', $me)->get('following_id');
 
         $follow = array();
         for ($i = 0; $i < count($followings); $i++) {
@@ -75,7 +84,7 @@ class PostController extends Controller
                 //팔로우 되어 있을 경우
                 $profile['posts'] = $posts;
                 $profile['followCheck'] = true;
-            } else if ($user->id == $me->id) {
+            } else if ($user->id == $me) {
                 //나 자신일 경우
                 $profile['posts'] = Post::where('user_id', '=', $id)->get();
                 $profile['followCheck'] = false;
@@ -88,6 +97,7 @@ class PostController extends Controller
             return response('', 204);
         }
     }
+
 
     public function store(Request $request)
     {
@@ -343,11 +353,6 @@ class PostController extends Controller
         $user_id = $post->user_id;
         //게시물 삭제
         if ($user == $user_id) {
-            // if ($post->img) {
-            //     Storage::disk('s3')->delete('https://run-images.s3.ap-northeast-2.amazonaws.com/mapImage/LoS68WJHuvEu5tjPPM9R0aLqnjw4baLD52YHiDkv.jpg');
-            // };
-            // Storage::disk('s3')->deleteDirectory('https://run-images.s3.ap-northeast-2.amazonaws.com/mapImage/SeLYgWx2t5NFaC3L3mSMJYrb9yzrSyYPcMoggy0f.jpg');
-
             $post->delete();
             return $post->id;
         } else {

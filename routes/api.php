@@ -48,6 +48,9 @@ Route::get('/gpsData/check', [GpsDataController::class, 'gpsDataCheck']);
 
 //모든유저검색
 Route::get('/allUser', [AuthController::class, 'allUser']);
+//프로필 조회
+Route::get('/profile', [PostController::class, "profile"]);
+
 
 
 //현재로그인 확인
@@ -56,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', [AuthController::class, 'user']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('userSearch', [AuthController::class, 'userSearch']);
+    //프로필 편집
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::patch('/fcmToken', [AuthController::class, 'fcmToken']);
 
@@ -70,7 +74,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [PostController::class, "destroy"]);
         //일주일 간격으로 요일별 누적 거리 구하는 라우터
         Route::get('/weekRecord', [PostController::class, "weekRecord"]);
-        Route::get('/profile/{id}', [PostController::class, "profile"]);
     });
 
     // 팔로우요청
