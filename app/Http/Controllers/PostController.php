@@ -8,6 +8,7 @@ use App\Models\Follow;
 use App\Models\Goal;
 use App\Models\Image;
 use App\Models\MapImage;
+use App\Models\Notification;
 use App\Models\Post;
 use App\Models\Record;
 use App\Models\User;
@@ -72,18 +73,25 @@ class PostController extends Controller
         //조회한 유저의 게시글(팔로워되어있을때만 조회 가능)
         $posts = Post::where('user_id', '=', $id)->where('range', '=', 'public')->get();
 
+
         if ($user) {
             if (in_array($user->id, $follow)) {
                 //팔로우 되어 있을 경우
                 $profile['posts'] = $posts;
-                $profile['followCheck'] = true;
+                $profile['followCheck'] = 1;
             } else if ($user->id == $me) {
                 //나 자신일 경우
                 $profile['posts'] = Post::where('user_id', '=', $id)->get();
-                $profile['followCheck'] = false;
+                $profile['followCheck'] = 2;
             } else {
                 // 팔로우 안되어 있을 경우
-                $profile['followCheck'] = false;
+                $follow_request = Notification::where('mem_id', '=', $id)->where('target_mem_id', '=', $me)->where('not_type', '=', 'followRequest')->first();
+                if ($follow_request) {
+                    //요청이 되어 있는 상태
+                    $profile['followCheck'] = 3;
+                } else {
+                    $profile['followCheck'] = 2;
+                }
             }
             return response($profile, 200);
         } else {

@@ -34,10 +34,17 @@ class FollowsController extends Controller
             ],
             [
                 'id' => $user->id,
-                'mem_id' => $me,
+                'target_mem_id' => $me,
                 'type' => 'followRequest'
             ],
         );
+    }
+
+
+    //팔로우 취소
+    public function cancel(User $user)
+    {
+        Notification::where('mem_id', '=', $user->id)->where('target_mem_id', '=', Auth::user()->id)->where('not_type', '=', 'followRequest')->delete();
     }
 
     public function store(User $user)
@@ -114,6 +121,8 @@ class FollowsController extends Controller
     {
         //현재 로그인한 유저의 id
         $me = User::where('id', '=', Auth::user()->id)->first();
+
+        Notification::where('mem_id', '=', $user->id)->where('target_mem_id', '=', $me->id)->where('not_type', '=', 'followRequest')->delete();
 
         if ($user->id != $me->id) {
             $me->followings()->toggle($user->id);

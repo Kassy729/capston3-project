@@ -75,8 +75,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/weekRecord', [PostController::class, "weekRecord"]);
     });
 
-    // 팔로우요청
+    //팔로우요청
     Route::post('/followRequest/{user}', [FollowsController::class, 'request']);
+    //팔로우 요청 취소
+    Route::post('/cancel/{user}', [FollowsController::class, 'cancel']);
+
     // 팔로우수락
     Route::post('/follow/{user}', [FollowsController::class, 'store']);
     Route::post('/unFollow/{user}', [FollowsController::class, 'un_follow']);
