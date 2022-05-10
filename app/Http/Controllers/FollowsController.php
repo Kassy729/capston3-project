@@ -34,7 +34,7 @@ class FollowsController extends Controller
             ],
             [
                 'id' => $user->id,
-                'target_mem_id' => $me,
+                'target_mem_id' => $me->id,
                 'type' => 'followRequest'
             ],
         );
