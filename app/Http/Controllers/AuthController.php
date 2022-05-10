@@ -52,7 +52,8 @@ class AuthController extends Controller
             'run_distance3' => false,
             'run_altitude' => false,
             'make_track' => false,
-            'rank' => false,
+            'make_track2' => false,
+            'make_track3' => false
         ]);
 
         return response([

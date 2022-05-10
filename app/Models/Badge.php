@@ -21,7 +21,8 @@ class Badge extends Model
         "run_distance3",
         "run_altitude",
         "make_track",
-        "rank"
+        "make_track2",
+        "make_track3"
     ];
 
     public function user()

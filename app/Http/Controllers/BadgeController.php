@@ -6,6 +6,7 @@ use App\Models\Badge;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class BadgeController extends Controller
 {
@@ -81,6 +82,17 @@ class BadgeController extends Controller
 
 
         //코스
-        
+        $id = Auth::user()->id;
+        $response = Http::get(env('NODE_SERVER_URL') . "/api/users/$id");
+
+        $count_track = json_decode($response)->count;
+
+        if ($count_track >= 3) {
+            Badge::where('user_id', '=', $user->id)->update(['make_track' => true]);
+        } else if ($count_track >= 20) {
+            Badge::where('user_id', '=', $user->id)->update(['make_track2' => true]);
+        } else if ($count_track >= 50) {
+            Badge::where('user_id', '=', $user->id)->update(['make_track3' => true]);
+        }
     }
 }
