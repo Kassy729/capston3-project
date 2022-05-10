@@ -33,7 +33,7 @@ class FollowsController extends Controller
                 'body' => $me->name . '님이' . ' ' . '팔로우를 요청했습니다.'
             ],
             [
-                'id' => $user,
+                'id' => $user->id,
                 'mem_id' => $me,
                 'type' => 'followRequest'
             ],
