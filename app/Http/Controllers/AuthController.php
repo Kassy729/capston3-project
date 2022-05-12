@@ -161,11 +161,13 @@ class AuthController extends Controller
         $user->birth = $request->birth;
         $user->introduce = $request->introduce;
         $user->location = $request->location;
+        $user->sex = $request->sex;
 
         if ($request->hasFile("profile")) {
             $path = $request->profile->store('profile', 's3');
             $user->profile = Storage::url($path);
         };
+
 
         $user->save();
 
