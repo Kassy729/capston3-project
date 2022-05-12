@@ -6,6 +6,7 @@ use App\Models\Badge;
 use App\Models\DayRecord;
 use App\Models\Follow;
 use App\Models\Image;
+use App\Models\Notification;
 use App\Models\RunRecord;
 use App\Models\User;
 use App\Notifications\InvoicePaid;
@@ -128,7 +129,17 @@ class AuthController extends Controller
             array_push($follow_array, $follow[$i]->following_id);
         }
         for ($i = 0; $i < count($user); $i++) {
-            $user[$i]['followCheck'] = in_array($user[$i]->id, $follow_array);
+            if (in_array($user[$i]->id, $follow_array)) {
+                $user[$i]['followCheck'] = 1;
+            } else {
+                $follow_request = Notification::where('mem_id', '=', $user[$i]->id)->where('target_mem_id', '=', Auth::user()->id)->where('not_type', '=', 'followRequest')->first();
+                if ($follow_request) {
+                    //요청이 되어 있는 상태
+                    $user[$i]['followCheck'] = 3;
+                } else {
+                    $user[$i]['followCheck'] = 2;
+                }
+            }
         }
 
         return response(
