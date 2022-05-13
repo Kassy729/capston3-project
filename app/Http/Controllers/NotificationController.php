@@ -95,6 +95,7 @@ class NotificationController extends Controller
             $notification->delete();
             return response([
                 'message' => '알림 삭제 성공',
+                'not_id' => $id
             ], 200);
         } else {
             return response('', 401);
