@@ -167,7 +167,7 @@ class PostController extends Controller
         if ($request->hasFile('mapImg')) {
             for ($i = 0; $i < count($request->mapImg); $i++) {
                 $path[$i] = $request->mapImg[$i]->store('mapImage', 's3');
-                $input["img"] = Storage::url($path[$i]);
+                $input["img"] = env('S3_SERVER_URL') . $path[$i];
             }
         }
         //명준-> 스위치써라, 메세지만 따로 빼라
@@ -524,7 +524,7 @@ class PostController extends Controller
                 $path[$i] = $request->img[$i]->store('image', 's3');
                 Image::create([
                     'image' => basename($path[$i]) . time(),
-                    'url' => Storage::url($path[$i]),
+                    'url' => env('S3_SERVER_URL') . $path[$i],
                     'post_id' => $post->id
                 ]);
             }
