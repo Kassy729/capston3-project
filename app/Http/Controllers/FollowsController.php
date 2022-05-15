@@ -38,6 +38,10 @@ class FollowsController extends Controller
                 'type' => 'followRequest'
             ],
         );
+
+        return response([
+            'message' => $user->name . '님에게 팔로우 요청했습니다.'
+        ], 200);
     }
 
 
@@ -45,6 +49,10 @@ class FollowsController extends Controller
     public function cancel(User $user)
     {
         Notification::where('mem_id', '=', $user->id)->where('target_mem_id', '=', Auth::user()->id)->where('not_type', '=', 'followRequest')->delete();
+
+        return response([
+            'message' => '팔로우 요청을 취소합니다'
+        ], 200);
     }
 
     public function store(User $user)
