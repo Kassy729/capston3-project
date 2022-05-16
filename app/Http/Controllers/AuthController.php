@@ -108,7 +108,7 @@ class AuthController extends Controller
         User::where('id', '=', $user->id)->update(['fcm_token' => null]);
 
         return response([
-            'message' => 'Success'
+            'message' => 'success'
         ], 200)->withCookie($cookie);
     }
 
@@ -176,13 +176,16 @@ class AuthController extends Controller
 
         if ($request->hasFile("profile")) {
             $path = $request->profile->store('profile', 's3');
-            $user->profile = Storage::url($path);
+            $user->profile = env('S3_SERVER_URL') . $path;
         };
 
 
         $user->save();
 
-        return $user;
+        return response(
+            $user,
+            200
+        );
     }
 
     public function fcmToken(Request $request)
