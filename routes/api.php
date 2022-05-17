@@ -110,6 +110,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/type', [RecordController::class, 'type']);  //자전거 달리기 비율
         Route::get('/totalTime', [RecordController::class, 'totalTime']);  //누적 시간
         Route::get('/totalCalorie', [RecordController::class, 'totalCalorie']);  //누적 칼로리
+        Route::get('/altitude', [RecordController::class, 'altitude']);
         Route::post('/goal', [PostController::class, 'goal']);
     });
 

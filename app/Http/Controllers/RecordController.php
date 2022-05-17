@@ -114,4 +114,21 @@ class RecordController extends Controller
             );
         }
     }
+
+    public function altitude(Request $request)
+    {
+        $user = $request->query('id');
+        if (!$user) {
+            $user = Auth::user()->id;
+        }
+
+        $post = Post::where('user_id', '=', $user)->get();
+
+        //누적고도
+        $altitude = 0;
+        for ($i = 0; $i < count($post); $i++) {
+            $altitude += $post[$i]['altitude'];
+        }
+        return $altitude;
+    }
 }
