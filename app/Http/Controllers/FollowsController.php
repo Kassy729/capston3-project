@@ -134,7 +134,9 @@ class FollowsController extends Controller
 
         if ($user->id != $me->id) {
             $me->followings()->toggle($user->id);
-            return response('', 200);
+            return response([
+                'message' => '팔로우를 취소합니다'
+            ], 200);
         } else {
             return response('본인은 팔로우할 수 없습니다', 400);
         }
