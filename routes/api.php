@@ -111,6 +111,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/totalTime', [RecordController::class, 'totalTime']);  //누적 시간
         Route::get('/totalCalorie', [RecordController::class, 'totalCalorie']);  //누적 칼로리
         Route::get('/altitude', [RecordController::class, 'altitude']);
+        Route::get('/trackCount', [RecordController::class, 'track_count']);
         Route::post('/goal', [PostController::class, 'goal']);
     });
 

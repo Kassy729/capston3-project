@@ -129,6 +129,20 @@ class RecordController extends Controller
         for ($i = 0; $i < count($post); $i++) {
             $altitude += $post[$i]['altitude'];
         }
-        return $altitude;
+        return response($altitude, 200);
+    }
+
+    //코스
+    public function track_count(Request $request)
+    {
+        $user = $request->query('id');
+        if (!$user) {
+            $user = Auth::user()->id;
+        }
+        $response = Http::get(env('NODE_SERVER_URL') . "/api/users/$user");
+
+        $count_track = json_decode($response)->count;
+
+        return response($count_track, 200);
     }
 }
