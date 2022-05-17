@@ -113,6 +113,3 @@ class RankingController extends Controller
         }
     }
 }
-
-
-//체크포인트  목표

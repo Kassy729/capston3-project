@@ -15,10 +15,12 @@ class RecordController extends Controller
 {
     public function distance(Request $request)
     {
-        $user = Auth::user();
         $event = $request->query('event');
-
-        $data = Post::where('user_id', '=', $user->id)->where('event', '=', $event)->get('distance');
+        $user = $request->query('id');
+        if (!$user) {
+            $user = Auth::user()->id;
+        }
+        $data = Post::where('user_id', '=', $user)->where('event', '=', $event)->get('distance');
 
         $distance = 0;
         for ($i = 0; $i < count($data); $i++) {
@@ -34,9 +36,13 @@ class RecordController extends Controller
         }
     }
 
-    public function type()
+    public function type(Request $request)
     {
-        $user_id = Auth::user()->id;
+        $user_id = $request->query('id');
+        if (!$user_id) {
+            $user_id = Auth::user()->id;
+        }
+
         $total_count = Post::where('user_id', '=', $user_id)->count();
         $bike_count = Post::where('user_id', '=', $user_id)->where('event', '=', 'B')->count();
 
@@ -52,13 +58,16 @@ class RecordController extends Controller
         }
     }
 
-    public function totalTime()
+    public function totalTime(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->query('id');
+        if (!$user) {
+            $user = Auth::user()->id;
+        }
         $weekTime = 0;
 
-        $time = Post::where('user_id', '=', $user->id)->get('time');
-        $count = Post::where('user_id', '=', $user->id)->count();
+        $time = Post::where('user_id', '=', $user)->get('time');
+        $count = Post::where('user_id', '=', $user)->count();
 
         for ($i = 0; $i < $count; $i++) {
             $weekTime += $time[$i]->time;
@@ -77,13 +86,16 @@ class RecordController extends Controller
         }
     }
 
-    public function totalCalorie()
+    public function totalCalorie(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->query('id');
+        if (!$user) {
+            $user = Auth::user()->id;
+        }
         $weekCalorie = 0;
 
-        $calorie = Post::where('user_id', '=', $user->id)->get('calorie');
-        $count = Post::where('user_id', '=', $user->id)->count();
+        $calorie = Post::where('user_id', '=', $user)->get('calorie');
+        $count = Post::where('user_id', '=', $user)->count();
 
 
         for ($i = 0; $i < $count; $i++) {

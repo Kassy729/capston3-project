@@ -71,7 +71,7 @@ class PostController extends Controller
         $profile['runWeekData'] = $run_week_data;
 
         //조회한 유저의 게시글(팔로워되어있을때만 조회 가능)
-        $posts = Post::where('user_id', '=', $id)->where('range', '=', 'public')->get();
+        $posts = Post::with(['user', 'likes', 'image'])->where('user_id', '=', $id)->where('range', '=', 'public')->get();
 
 
         if ($user) {
@@ -81,7 +81,7 @@ class PostController extends Controller
                 $profile['followCheck'] = 1;
             } else if ($user->id == $me) {
                 //나 자신일 경우
-                $profile['posts'] = Post::where('user_id', '=', $id)->get();
+                $profile['posts'] = Post::with(['user', 'likes', 'image'])->where('user_id', '=', $id)->get();
                 $profile['followCheck'] = 2;
             } else {
                 // 팔로우 안되어 있을 경우
