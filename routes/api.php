@@ -60,7 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //프로필 편집
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::patch('/fcmToken', [AuthController::class, 'fcmToken']);
-
+    Route::put('/profileBadge', [AuthController::class, 'profile_badge']);
 
     // 운동sns
     Route::prefix('post')->group(function () {

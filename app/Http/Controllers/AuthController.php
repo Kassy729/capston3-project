@@ -188,6 +188,23 @@ class AuthController extends Controller
         );
     }
 
+    public function profile_badge(Request $request)
+    {
+        $main_badge = $request->badge;
+        $badges = Badge::where('user_id', '=', Auth::user()->id)->first();
+
+        if ($badges->$main_badge == true) {
+            User::where('id', '=', Auth::user()->id)->update(['badge' => $main_badge]);
+            return response([
+                'message' => $main_badge . '로 메인뱃지 설정합니다'
+            ]);
+        } else {
+            return response([
+                'message' => '아직 달성 못한 뱃지 입니다'
+            ]);
+        }
+    }
+
     public function fcmToken(Request $request)
     {
         $user = Auth::user();
