@@ -22,7 +22,10 @@ class Badge extends Model
         "run_altitude",
         "make_track",
         "make_track2",
-        "make_track3"
+        "make_track3",
+        'altitude',
+        'altitude2',
+        'altitude3'
     ];
 
     public function user()

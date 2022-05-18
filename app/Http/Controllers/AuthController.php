@@ -47,14 +47,15 @@ class AuthController extends Controller
             'bike_distance' => false,
             'bike_distance2' => false,
             'bike_distance3' => false,
-            'bike_altitude' => false,
             'run_distance' => false,
             'run_distance2' => false,
             'run_distance3' => false,
-            'run_altitude' => false,
             'make_track' => false,
             'make_track2' => false,
-            'make_track3' => false
+            'make_track3' => false,
+            'altitude' => false,
+            'altitude2' => false,
+            'altitude3' => false
         ]);
 
         return response([
@@ -192,6 +193,10 @@ class AuthController extends Controller
     {
         $main_badge = $request->badge;
         $badges = Badge::where('user_id', '=', Auth::user()->id)->first();
+
+        if (!$main_badge) {
+            return User::where('id', '=', Auth::user()->id)->update(['badge' => null]);
+        }
 
         if ($badges->$main_badge == true) {
             User::where('id', '=', Auth::user()->id)->update(['badge' => $main_badge]);

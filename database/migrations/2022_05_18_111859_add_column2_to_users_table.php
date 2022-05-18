@@ -14,7 +14,7 @@ class AddColumn2ToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('badge');
+            $table->string('badge')->nullable();
         });
     }
 
