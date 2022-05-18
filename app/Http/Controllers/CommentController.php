@@ -27,6 +27,16 @@ class CommentController extends Controller
             ]
         );
 
+        $post = Post::where('id', '=', $id)->first('user_id');
+
+        if ($me->id == $post->user_id) {
+            $comment['user'] = $me;
+            return response([
+                'message' => ['댓글달기 성공'],
+                'comment' => $comment,
+            ], 201);
+        }
+
         //fcm알림설정
         $post = Post::where('id', '=', $id)->first();
         $user = User::find($post->user_id);
