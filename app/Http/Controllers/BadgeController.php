@@ -18,6 +18,8 @@ class BadgeController extends Controller
         //첫 운동
         if (count($post) >= 1) {
             Badge::where('user_id', '=', $user->id)->update(['first_exercise' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['first_exercise' => false]);
         }
 
 
@@ -32,14 +34,21 @@ class BadgeController extends Controller
         //거리 100km달성 뱃지
         if ($distance >= 100) {
             Badge::where('user_id', '=', $user->id)->update(['bike_distance' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['bike_distance' => false]);
         }
+
         //거리 500km달성 뱃지
         if ($distance >= 500) {
             Badge::where('user_id', '=', $user->id)->update(['bike_distance2' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['bike_distance2' => false]);
         }
         //거리 1000km달성 뱃지
         if ($distance >= 1000) {
             Badge::where('user_id', '=', $user->id)->update(['bike_distance3' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['bike_distance3' => false]);
         }
 
 
@@ -55,14 +64,20 @@ class BadgeController extends Controller
         //거리 100km달성 뱃지
         if ($run_distance >= 100) {
             Badge::where('user_id', '=', $user->id)->update(['run_distance' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['run_distance' => false]);
         }
         //거리 500km달성 뱃지
         if ($run_distance >= 500) {
             Badge::where('user_id', '=', $user->id)->update(['run_distance2' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['run_distance2' => false]);
         }
         //거리 1000km달성 뱃지
         if ($run_distance >= 1000) {
             Badge::where('user_id', '=', $user->id)->update(['run_distance3' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['run_distance3' => false]);
         }
 
         //누적고도
@@ -78,12 +93,18 @@ class BadgeController extends Controller
         //누적 고도
         if ($altitude >= 10000) {
             Badge::where('user_id', '=', $user->id)->update(['altitude' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['altitude' => false]);
         }
         if ($altitude >= 20000) {
             Badge::where('user_id', '=', $user->id)->update(['altitude2' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['altitude2' => false]);
         }
         if ($altitude >= 30000) {
             Badge::where('user_id', '=', $user->id)->update(['altitude3' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['altitude3' => false]);
         }
 
 
@@ -95,10 +116,18 @@ class BadgeController extends Controller
 
         if ($count_track >= 3) {
             Badge::where('user_id', '=', $user->id)->update(['make_track' => true]);
-        } else if ($count_track >= 20) {
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['make_track' => false]);
+        }
+        if ($count_track >= 20) {
             Badge::where('user_id', '=', $user->id)->update(['make_track2' => true]);
-        } else if ($count_track >= 50) {
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['make_track2' => false]);
+        }
+        if ($count_track >= 50) {
             Badge::where('user_id', '=', $user->id)->update(['make_track3' => true]);
+        } else {
+            Badge::where('user_id', '=', $user->id)->update(['make_track3' => false]);
         }
     }
 }
