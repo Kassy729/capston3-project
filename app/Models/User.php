@@ -31,7 +31,8 @@ class User extends Authenticatable
         'run_mmr',
         "created_at",
         "fcm_token",
-        'profile_badge'
+        'profile_badge',
+        'badge'
     ];
 
     /**

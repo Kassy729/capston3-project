@@ -37,6 +37,7 @@ class AuthController extends Controller
             'birth' => $request->input('birth'),
             'introduce' => $request->input('introduce'),
             'location' => $request->input('location'),
+            'badge' => "",
             'mmr' => 0,
             'run_mmr' => 0
         ]);
@@ -195,7 +196,7 @@ class AuthController extends Controller
         $badges = Badge::where('user_id', '=', Auth::user()->id)->first();
 
         if (!$main_badge) {
-            return User::where('id', '=', Auth::user()->id)->update(['badge' => null]);
+            return User::where('id', '=', Auth::user()->id)->update(['badge' => ""]);
         }
 
         if ($badges->$main_badge == true) {
