@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Badge;
+use App\Models\Comment;
 use App\Models\DayRecord;
 use App\Models\Follow;
 use App\Models\Goal;
@@ -241,7 +242,8 @@ class PostController extends Controller
         $array = array();
         $array2 = array();
 
-        //
+        $comment_array = array();
+
         for ($i = 0; $i < count($post); $i++) {
             if ($post[$i]->opponent_id) {
                 $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
@@ -261,6 +263,11 @@ class PostController extends Controller
                 array_push($array2, []);
             }
             $post[$i]['likeCheck'] = in_array($id, $array2[$i]);
+
+            //댓글 개수 체크
+            $comments = Comment::where('post_id', '=', $post[$i]->id)->get();
+            array_push($comment_array, count($comments));
+            $post[$i]['commentCount'] = $comment_array[$i];
         }
 
         if ($post) {
@@ -279,21 +286,54 @@ class PostController extends Controller
         $user = Auth::user()->id;
 
         //최근 게시물 순으로 보여줌
-        $post = Post::with(['user', 'likes', 'comment', 'image', 'mapImage'])->orderby('updated_at', 'desc')->where('user_id', '=', $user)->paginate(10);
+        $post = Post::with(['user', 'likes', 'image'])->orderby('updated_at', 'desc')->where('user_id', '=', $user)->paginate(10);
 
+
+        // $opponent_post = array();
+        // for ($i = 0; $i < count($post); $i++) {
+        //     if ($post[$i]->opponent_id) {
+        //         $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
+        //         array_push($opponent_post, $op_post);
+        //         $post[$i]["opponent_post"] = $opponent_post[$i];
+        //     } else {
+        //         return response(
+        //             $post,
+        //             200
+        //         );
+        //     }
+        // }
 
         $opponent_post = array();
+        $opponent_user = array();
+        $array = array();
+        $array2 = array();
+
+        $comment_array = array();
+
         for ($i = 0; $i < count($post); $i++) {
             if ($post[$i]->opponent_id) {
                 $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
+                $op_user = User::where('id', '=', $op_post->user_id)->first();
                 array_push($opponent_post, $op_post);
+                array_push($opponent_user, $op_user);
                 $post[$i]["opponent_post"] = $opponent_post[$i];
-            } else {
-                return response(
-                    $post,
-                    200
-                );
+                $post[$i]['opponent_post']['user'] = $opponent_user[$i];
             }
+            //좋아요 체크
+            if (count($post[$i]->likes) !== 0) {
+                for ($y = 0; $y < count($post[$i]->likes); $y++) {
+                    array_push($array, $post[$i]->likes[$y]['id']);
+                }
+                array_push($array2, $array);
+            } else {
+                array_push($array2, []);
+            }
+            $post[$i]['likeCheck'] = in_array($user, $array2[$i]);
+
+            //댓글 개수 체크
+            $comments = Comment::where('post_id', '=', $post[$i]->id)->get();
+            array_push($comment_array, count($comments));
+            $post[$i]['commentCount'] = $comment_array[$i];
         }
 
 
