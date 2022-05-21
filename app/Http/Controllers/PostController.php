@@ -178,44 +178,47 @@ class PostController extends Controller
         if ($request->kind == "자유") {
             //이미지 유무 확인후 있으면 save메서드 호출
             if ($request->hasFile('img')) {
-                $this->saveImage($request, $input);
+                $post = $this->saveImage($request, $input);
             } else {
-                Post::create($input);
+                $post = Post::create($input);
             }
             return response([
-                'message' => '자유 기록을 저장했습니다'
+                'message' => '자유 기록을 저장했습니다',
+                'postId' => $post->id
             ], 201);
         } else if ($request->kind == "싱글") {
             if ($request->hasFile('img')) {
-                $this->saveImage($request, $input);
+                $post = $this->saveImage($request, $input);
             } else {
-                Post::create($input);
+                $post = Post::create($input);
             }
             return response([
-                'message' => '싱글전 기록을 저장 했습니다.'
+                'message' => '싱글전 기록을 저장 했습니다.',
+                'postId' => $post->id
             ], 201);
         } else if ($request->kind == "친선") {
             if ($request->hasFile('img')) {
-                $this->saveImage($request, $input);
+                $post = $this->saveImage($request, $input);
             } else {
-                Post::create($input);
+                $post = Post::create($input);
             }
             return response([
-                'message' => '친선전 기록을 저장 했습니다.'
+                'message' => '친선전 기록을 저장 했습니다.',
+                'postId' => $post->id
             ], 201);
         } else {
             $myTime = $request->time;
             $opponentTime = Post::where('id', '=', $request->opponent_id)->first('time');
             if ($opponentTime) {
                 if ($request->hasFile('img')) {
-                    $this->saveImage($request, $input);
+                    $post = $this->saveImage($request, $input);
                 } else {
-                    Post::create($input);
+                    $post = Post::create($input);
                 }
             }
             //시간을 비교해서 mmr을 상승
             $type = $input['event'];
-            return $this->mmrPoint($myTime, $opponentTime, $type);
+            return $this->mmrPoint($myTime, $opponentTime, $type, $post);
         }
     }
 
@@ -513,7 +516,7 @@ class PostController extends Controller
 
 
     //mmr상승 함수
-    protected function mmrPoint($myTime, $opponentTime, $type)
+    protected function mmrPoint($myTime, $opponentTime, $type, $post)
     {
         $id = Auth::user()->id;
         //이기면 mmr +10
@@ -521,12 +524,14 @@ class PostController extends Controller
             if ($type == 'B') {
                 DB::table('users')->where('id', $id)->increment('mmr', 10);
                 return response([
-                    'message' => '승리하셨습니다'
+                    'message' => '승리하셨습니다',
+                    'postId' => $post->id
                 ], 200);
             } else {
                 DB::table('users')->where('id', $id)->increment('run_mmr', 10);
                 return response([
-                    'message' => '승리하셨습니다'
+                    'message' => '승리하셨습니다',
+                    'postId' => $post->id
                 ], 200);
             }
         } else if ($myTime == $opponentTime->time) {
@@ -534,12 +539,14 @@ class PostController extends Controller
             if ($type == 'B') {
                 DB::table('users')->where('id', $id)->increment('mmr', 10);
                 return response([
-                    'message' => '무승부입니다'
+                    'message' => '무승부입니다',
+                    'postId' => $post->id
                 ], 200);
             } else {
                 DB::table('users')->where('id', $id)->increment('run_mmr', 10);
                 return response([
-                    'message' => '무승부입니다'
+                    'message' => '무승부입니다',
+                    'postId' => $post->id
                 ], 200);
             }
         } else {
@@ -547,12 +554,14 @@ class PostController extends Controller
             if ($type == 'B') {
                 DB::table('users')->where('id', $id)->increment('mmr', 10);
                 return response([
-                    'message' => '패배하셨습니다'
+                    'message' => '패배하셨습니다',
+                    'postId' => $post->id
                 ], 200);
             } else {
                 DB::table('users')->where('id', $id)->increment('run_mmr', 10);
                 return response([
-                    'message' => '패배하셨습니다'
+                    'message' => '패배하셨습니다',
+                    'postId' => $post->id
                 ], 200);
             }
         }
@@ -572,6 +581,7 @@ class PostController extends Controller
                 ]);
             }
         }
+        return $post;
     }
 }
 
