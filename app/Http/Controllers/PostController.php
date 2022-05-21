@@ -30,8 +30,11 @@ class PostController extends Controller
     {
         $me = $request->query('me');
         $id = $request->query('id');
-        $user = User::find($id);
 
+        if (!$id) {
+            $user = Auth::user();
+        }
+        $user = User::find($id);
 
         $followings = Follow::where('follower_id', '=', $me)->get('following_id');
 
