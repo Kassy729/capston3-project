@@ -26,6 +26,12 @@ use App\Services\FCMService;
 
 class PostController extends Controller
 {
+    public function mongoTest()
+    {
+        $response = Http::get(env('NODE_SERVER_URL'));
+        return $response;
+    }
+
     public function profile(Request $request)
     {
         $me = $request->query('me');

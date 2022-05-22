@@ -62,6 +62,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/fcmToken', [AuthController::class, 'fcmToken']);
     Route::put('/profileBadge', [AuthController::class, 'profile_badge']);
 
+    Route::get('/mongoTest', [PostController::class, 'mongoTest']);
+
     // 운동sns
     Route::prefix('post')->group(function () {
         Route::post('/image', [PostController::class, 'image']);
