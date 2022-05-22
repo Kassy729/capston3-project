@@ -246,8 +246,7 @@ class PostController extends Controller
         array_push($array, $id);
 
         //팔로잉한 아이디의 포스트만 시간별로 출력
-        return $post = Post::with(['user', 'likes', 'image'])->whereIn('user_id', $array)->where('range', 'public')->orderby('updated_at', 'desc')->paginate(10);
-
+        $post = Post::with(['user', 'likes', 'image'])->whereIn('user_id', $array)->where('range', 'public')->orderby('updated_at', 'desc')->paginate(10);
 
         $opponent_post = array();
         $opponent_user = array();
@@ -256,15 +255,14 @@ class PostController extends Controller
 
         $comment_array = array();
 
-
         for ($i = 0; $i < count($post); $i++) {
             if ($post[$i]->opponent_id) {
                 $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
                 $op_user = User::where('id', '=', $op_post->user_id)->first();
                 array_push($opponent_post, $op_post);
                 array_push($opponent_user, $op_user);
-                $post[$i]["opponent_post"] = $opponent_post[$i];
-                $post[$i]['opponent_post']['user'] = $opponent_user[$i];
+                // $post[$i]["opponent_post"] = $opponent_post[$i];
+                // $post[$i]['opponent_post']['user'] = $opponent_user[$i];
             }
 
             //좋아요 체크
@@ -283,6 +281,8 @@ class PostController extends Controller
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
         }
+        return $opponent_post;
+
 
         if ($post) {
             return response(
