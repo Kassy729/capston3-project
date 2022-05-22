@@ -28,7 +28,7 @@ class PostController extends Controller
 {
     public function mongoTest()
     {
-        $response = Http::get(env('NODE_SERVER_URL'));
+        $response = Http::get('3.39.189.58');
         return $response;
     }
 
