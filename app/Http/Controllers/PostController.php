@@ -261,8 +261,8 @@ class PostController extends Controller
                 $op_user = User::where('id', '=', $op_post->user_id)->first();
                 array_push($opponent_post, $op_post);
                 array_push($opponent_user, $op_user);
-                // $post[$i]["opponent_post"] = $opponent_post[$i];
-                // $post[$i]['opponent_post']['user'] = $opponent_user[$i];
+                $post[$i]['opponent_post'] = $opponent_post[$i];
+                $post[$i]['opponent_post']['user'] = $opponent_user[$i];
             }
 
             //좋아요 체크
@@ -281,7 +281,6 @@ class PostController extends Controller
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
         }
-        return $opponent_post;
 
 
         if ($post) {
