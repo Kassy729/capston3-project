@@ -190,7 +190,7 @@ class PostController extends Controller
             }
             return response([
                 'message' => '자유 기록을 저장했습니다',
-                'postId' => $post->id
+                'postId' => $post->id,
             ], 201);
         } else if ($request->kind == "싱글") {
             if ($request->hasFile('img')) {
@@ -256,6 +256,7 @@ class PostController extends Controller
 
         $comment_array = array();
 
+
         for ($i = 0; $i < count($post); $i++) {
             if ($post[$i]->opponent_id) {
                 $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
@@ -276,21 +277,22 @@ class PostController extends Controller
             }
             $post[$i]['likeCheck'] = in_array($id, $array2[$i]);
 
-            //댓글 개수 체크
+            // 댓글 개수 체크
             $comments = Comment::where('post_id', '=', $post[$i]->id)->get();
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
-        }
 
-        if ($post) {
-            return response(
-                $post,
-                200
-            );
-        } else {
-            return response('', 204);
+            if ($post) {
+                return response(
+                    $post,
+                    200
+                );
+            } else {
+                return response('', 204);
+            }
         }
     }
+
 
     //내 활동내역 보기
     public function myIndex()
@@ -346,16 +348,15 @@ class PostController extends Controller
             $comments = Comment::where('post_id', '=', $post[$i]->id)->get();
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
-        }
 
-
-        if ($post) {
-            return response(
-                $post,
-                200
-            );
-        } else {
-            return response('', 204);
+            if ($post) {
+                return response(
+                    $post,
+                    200
+                );
+            } else {
+                return response('', 204);
+            }
         }
     }
 
