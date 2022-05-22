@@ -283,8 +283,7 @@ class PostController extends Controller
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
         }
-
-        return $post[1];
+        return $opponent_post;
 
 
         if ($post) {
