@@ -259,6 +259,7 @@ class PostController extends Controller
 
         for ($i = 0; $i < count($post); $i++) {
             if ($post[$i]->opponent_id) {
+                return 1;
                 return $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
                 $op_user = User::where('id', '=', $op_post->user_id)->first();
                 array_push($opponent_post, $op_post);
