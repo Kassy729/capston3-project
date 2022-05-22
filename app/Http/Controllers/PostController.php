@@ -256,7 +256,7 @@ class PostController extends Controller
 
         $comment_array = array();
 
-
+        return $post[2];
         for ($i = 0; $i < count($post); $i++) {
             if ($post[$i]->opponent_id) {
                 $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
