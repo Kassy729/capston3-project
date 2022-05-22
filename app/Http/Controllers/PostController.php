@@ -259,13 +259,11 @@ class PostController extends Controller
 
         for ($i = 0; $i < count($post); $i++) {
             if ($post[$i]->opponent_id) {
-                return 1;
-                return $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
+                $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
                 $op_user = User::where('id', '=', $op_post->user_id)->first();
                 array_push($opponent_post, $op_post);
                 array_push($opponent_user, $op_user);
                 $post[$i]["opponent_post"] = $opponent_post[$i];
-                return $post[$i];
                 $post[$i]['opponent_post']['user'] = $opponent_user[$i];
             }
             //좋아요 체크
@@ -283,15 +281,14 @@ class PostController extends Controller
             $comments = Comment::where('post_id', '=', $post[$i]->id)->get();
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
-
-            if ($post) {
-                return response(
-                    $post,
-                    200
-                );
-            } else {
-                return response('', 204);
-            }
+        }
+        if ($post) {
+            return response(
+                $post,
+                200
+            );
+        } else {
+            return response('', 204);
         }
     }
 
@@ -350,15 +347,14 @@ class PostController extends Controller
             $comments = Comment::where('post_id', '=', $post[$i]->id)->get();
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
-
-            if ($post) {
-                return response(
-                    $post,
-                    200
-                );
-            } else {
-                return response('', 204);
-            }
+        }
+        if ($post) {
+            return response(
+                $post,
+                200
+            );
+        } else {
+            return response('', 204);
         }
     }
 
