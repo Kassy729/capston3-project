@@ -248,7 +248,6 @@ class PostController extends Controller
         //팔로잉한 아이디의 포스트만 시간별로 출력
         $post = Post::with(['user', 'likes', 'image'])->whereIn('user_id', $array)->where('range', 'public')->orderby('updated_at', 'desc')->paginate(10);
 
-        return $post;
 
         $opponent_post = array();
         $opponent_user = array();
@@ -282,8 +281,9 @@ class PostController extends Controller
             $comments = Comment::where('post_id', '=', $post[$i]->id)->get();
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
+
+            return $post;
         }
-        // return $post;
 
         if ($post) {
             return response(
