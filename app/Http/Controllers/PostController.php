@@ -266,6 +266,7 @@ class PostController extends Controller
                 $post[$i]["opponent_post"] = $opponent_post[$i];
                 $post[$i]['opponent_post']['user'] = $opponent_user[$i];
             }
+            return $opponent_post;
             return $post[1];
             //좋아요 체크
             if (count($post[$i]->likes) !== 0) {
