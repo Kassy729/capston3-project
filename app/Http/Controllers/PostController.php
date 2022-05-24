@@ -262,7 +262,7 @@ class PostController extends Controller
                 array_push($opponent_post, $op_post);
                 array_push($opponent_user, $op_user);
                 $post[$i]['opponent_post'] = $opponent_post[$i];
-                return $post;
+                return $i;
                 $post[$i]['opponent_post']['user'] = $opponent_user[$i];
             }
 
