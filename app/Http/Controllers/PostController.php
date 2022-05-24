@@ -28,7 +28,7 @@ class PostController extends Controller
 {
     public function mongoTest()
     {
-        $response = Http::get('3.39.189.58');
+        $response = Http::get(env('NODE_SERVER_URL'));
         return $response;
     }
 
@@ -257,12 +257,15 @@ class PostController extends Controller
 
         for ($i = 0; $i < count($post); $i++) {
             if ($post[$i]->opponent_id) {
+                return 1;
                 $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
                 $op_user = User::where('id', '=', $op_post->user_id)->first();
                 array_push($opponent_post, $op_post);
                 array_push($opponent_user, $op_user);
                 $post[$i]['opponent_post'] = $opponent_post[$i];
                 $post[$i]['opponent_post']['user'] = $opponent_user[$i];
+            } else {
+                return 2;
             }
 
             //좋아요 체크
