@@ -264,7 +264,6 @@ class PostController extends Controller
                 $post[$i]['opponent_post'] = $opponent_post[$i];
                 $post[$i]['opponent_post']['user'] = $opponent_user[$i];
             }
-            return $post;
 
             //좋아요 체크
             if (count($post[$i]->likes) !== 0) {
@@ -282,7 +281,7 @@ class PostController extends Controller
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
         }
-        return $opponent_post;
+        return $post;
 
 
         if ($post) {
