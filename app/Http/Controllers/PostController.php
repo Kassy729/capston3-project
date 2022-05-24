@@ -267,16 +267,15 @@ class PostController extends Controller
 
             //좋아요 체크
             if (count($post[$i]->likes) !== 0) {
-                return 1;
                 for ($y = 0; $y < count($post[$i]->likes); $y++) {
                     array_push($array, $post[$i]->likes[$y]['id']);
                 }
                 array_push($array2, $array);
             } else {
-                return 2;
                 array_push($array2, []);
             }
             $post[$i]['likeCheck'] = in_array($id, $array2[$i]);
+            return $post;
 
             // 댓글 개수 체크
             $comments = Comment::where('post_id', '=', $post[$i]->id)->get();
