@@ -259,11 +259,12 @@ class PostController extends Controller
             if ($post[$i]->opponent_id) {
                 $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
                 $op_user = User::where('id', '=', $op_post->user_id)->first();
-                array_push($opponent_post, $op_post);
-                array_push($opponent_user, $op_user);
+                // array_push($opponent_post, $op_post);
+                // array_push($opponent_user, $op_user);
+                $post[$i]['opponent_post'] = $op_post;
+                $post[$i]['opponent_post']['user'] = $op_user;
             }
-            $post[$i]['opponent_post'] = $opponent_post[$i];
-            $post[$i]['opponent_post']['user'] = $opponent_user[$i];
+
 
             //좋아요 체크
             if (count($post[$i]->likes) !== 0) {
