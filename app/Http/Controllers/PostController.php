@@ -320,9 +320,6 @@ class PostController extends Controller
         //         );
         //     }
         // }
-
-        $opponent_post = array();
-        $opponent_user = array();
         $array = array();
         $array2 = array();
 
@@ -332,11 +329,13 @@ class PostController extends Controller
             if ($post[$i]->opponent_id) {
                 $op_post = Post::where('id', '=', $post[$i]->opponent_id)->first();
                 $op_user = User::where('id', '=', $op_post->user_id)->first();
-                array_push($opponent_post, $op_post);
-                array_push($opponent_user, $op_user);
-                $post[$i]['opponent_post'] = $opponent_post[$i];
-                $post[$i]['opponent_post']['user'] = $opponent_user[$i];
+                // array_push($opponent_post, $op_post);
+                // array_push($opponent_user, $op_user);
+                $post[$i]['opponent_post'] = $op_post;
+                $post[$i]['opponent_post']['user'] = $op_user;
             }
+
+
             //좋아요 체크
             if (count($post[$i]->likes) !== 0) {
                 for ($y = 0; $y < count($post[$i]->likes); $y++) {
@@ -348,11 +347,12 @@ class PostController extends Controller
             }
             $post[$i]['likeCheck'] = in_array($user, $array2[$i]);
 
-            //댓글 개수 체크
+            // 댓글 개수 체크
             $comments = Comment::where('post_id', '=', $post[$i]->id)->get();
             array_push($comment_array, count($comments));
             $post[$i]['commentCount'] = $comment_array[$i];
         }
+
         if ($post) {
             return response(
                 $post,
