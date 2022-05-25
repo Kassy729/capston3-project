@@ -37,10 +37,10 @@ class PostController extends Controller
         $me = $request->query('me');
         $id = $request->query('id');
 
-        if (!$id) {
-            $user = Auth::user();
+        if (!$me) {
+            $me = Auth::user();
         }
-        $user = User::find($id);
+
 
         $followings = Follow::where('follower_id', '=', $me)->get('following_id');
 
@@ -75,23 +75,27 @@ class PostController extends Controller
         //조회하기
         $profile = User::with(['followings', 'followers', 'badges'])->where('id', '=', $id)->first();
 
-        $profile['bikePercentage'] = $bike_percentage;
-        $profile['runPercentage'] = $run_percentage;
-        $profile['bikeWeekData'] = $bike_week_data;
-        $profile['runWeekData'] = $run_week_data;
+        if ($profile) {
+            $profile['bikePercentage'] = $bike_percentage;
+            $profile['runPercentage'] = $run_percentage;
+            $profile['bikeWeekData'] = $bike_week_data;
+            $profile['runWeekData'] = $run_week_data;
+        }
 
         //조회한 유저의 게시글(팔로워되어있을때만 조회 가능)
         $posts = Post::with(['user', 'likes', 'image'])->where('user_id', '=', $id)->where('range', '=', 'public')->get();
 
+        $my_posts = Post::with(['user', 'likes', 'image'])->where('user_id', '=', $id)->get();
 
-        if ($user) {
-            if (in_array($user->id, $follow)) {
+
+        if ($profile) {
+            if (in_array($id, $follow)) {
                 //팔로우 되어 있을 경우
-                $profile['posts'] = $posts;
+                $profile['posts'] = $this->check_post($posts, $id);
                 $profile['followCheck'] = 1;
-            } else if ($user->id == $me) {
+            } else if ($id == $me) {
                 //나 자신일 경우
-                $profile['posts'] = Post::with(['user', 'likes', 'image'])->where('user_id', '=', $id)->get();
+                $profile['posts'] = $this->check_post($my_posts, $id);
                 $profile['followCheck'] = 2;
             } else {
                 // 팔로우 안되어 있을 경우
@@ -248,8 +252,7 @@ class PostController extends Controller
         //팔로잉한 아이디의 포스트만 시간별로 출력
         $post = Post::with(['user', 'likes', 'image'])->whereIn('user_id', $array)->where('range', 'public')->orderby('updated_at', 'desc')->paginate(10);
 
-        $opponent_post = array();
-        $opponent_user = array();
+
         $array = array();
         $array2 = array();
 
@@ -589,6 +592,40 @@ class PostController extends Controller
             }
         }
         return $post;
+    }
+
+    protected function check_post($posts, $id)
+    {
+        $array = array();
+        $array2 = array();
+        $comment_array = array();
+
+        for ($i = 0; $i < count($posts); $i++) {
+            if ($posts[$i]->opponent_id) {
+                $op_post = Post::where('id', '=', $posts[$i]->opponent_id)->first();
+                $op_user = User::where('id', '=', $op_post->user_id)->first();
+                // array_push($opponent_post, $op_post);
+                // array_push($opponent_user, $op_user);
+                $posts[$i]['opponent_post'] = $op_post;
+                $posts[$i]['opponent_post']['user'] = $op_user;
+            }
+            //좋아요 체크
+            if (count($posts[$i]->likes) !== 0) {
+                for ($y = 0; $y < count($posts[$i]->likes); $y++) {
+                    array_push($array, $posts[$i]->likes[$y]['id']);
+                }
+                array_push($array2, $array);
+            } else {
+                array_push($array2, []);
+            }
+            $posts[$i]['likeCheck'] = in_array($id, $array2[$i]);
+            // 댓글 개수 체크
+            $comments = Comment::where('post_id', '=', $posts[$i]->id)->get();
+            array_push($comment_array, count($comments));
+            $posts[$i]['commentCount'] = $comment_array[$i];
+        }
+
+        return $posts;
     }
 }
 
