@@ -52,7 +52,7 @@ class TrackController extends Controller
         $track = json_decode($response, true);
 
         $profile = User::where('id', '=', $track['user']['userId'])->first('profile');
-        $track['user']['profile'] = $profile;
+        $track['user'] = $profile;
 
         if ($track) {
             return response($track, 200);
