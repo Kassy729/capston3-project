@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CheckPoint;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -48,7 +49,16 @@ class TrackController extends Controller
         //Node에서 track_id를 리턴
         $response = Http::get(env('NODE_SERVER_URL') . "/api/tracks/$id");
         //JSON 문자열을 변환하여 값을 추출
-        return json_decode($response, true);
+        $track = json_decode($response, true);
+
+        $profile = User::where('id', '=', $track['user']['userId'])->first('profile');
+        $track['user']['profile'] = $profile;
+
+        if ($track) {
+            return response($track, 200);
+        } else {
+            return response('', 204);
+        }
     }
 
     public function checkPoint(Request $request)
