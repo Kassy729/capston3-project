@@ -75,6 +75,14 @@ class NotificationController extends Controller
         $user = Auth::user();
         $notifications = ModelsNotification::where('mem_id', '=', $user->id)->orderby('created_at', 'desc')->get();
 
+        $array = array();
+        $profile = array();
+        for ($i = 0; $i < count($notifications); $i++) {
+            array_push($array, $notifications[$i]->target_mem_id);
+            array_push($profile, User::where('id', '=', $array[$i])->first('profile'));
+            $notifications[$i]['profile'] = $profile[$i];
+        }
+
         if ($notifications) {
             return response($notifications, 200);
         } else {
